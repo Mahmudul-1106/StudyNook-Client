@@ -13,9 +13,9 @@ const Navbar = () => {
   const user = session?.user;
 
   return (
-    <div className="bg-white px-2 sm:px-10 mx-auto flex items-center flex-col sm:flex-row justify-between gap-4 py-3 fixed top-0 left-0 w-full z-50 border-b border-gray-100">
+    <div className="bg-[#61A5C2] px-2 sm:px-10 mx-auto flex items-center flex-col sm:flex-row justify-between gap-4 py-3 fixed top-0 left-0 w-full z-50 border-b border-gray-100">
       {/* Brand Logo Wrapper */}
-      <div className="flex flex-1">
+      <div className="flex justify-start">
         <Link href={"/"}>
           <Image
             src={logo}
@@ -28,7 +28,7 @@ const Navbar = () => {
       </div>
 
       {/* Navigation Links - Updated to match StudyNook Layout Requirements */}
-      <ul className="flex flex-1 justify-center font-semibold items-center text-gray-700 gap-3">
+      <ul className=" flex justify-center font-semibold items-center text-gray-700 gap-3">
         <li>
           <NavLink href={"/"} className="p-2 rounded-sm">
             Home
@@ -44,7 +44,7 @@ const Navbar = () => {
         {user && (
           <>
             <li>
-              <NavLink href={"/add-room"} className="p-2 rounded-sm">
+              <NavLink href={"/addRoom"} className="p-2 rounded-sm">
                 Add Room
               </NavLink>
             </li>
@@ -63,7 +63,7 @@ const Navbar = () => {
       </ul>
 
       {/* Authentication Action Status Area */}
-      <div className="flex flex-1 justify-end items-center gap-4">
+      <div className="flex justify-end items-center gap-4">
         {isPending ? (
           <span className="loading loading-spinner loading-md text-cyan-600"></span>
         ) : user ? (
