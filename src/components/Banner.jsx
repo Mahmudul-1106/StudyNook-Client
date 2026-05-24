@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 const Banner = () => {
@@ -5,8 +6,7 @@ const Banner = () => {
     <div
       className=" mx-auto hero min-h-[85vh] w-full bg-cover bg-center"
       style={{
-        backgroundImage:
-          "url(https://images.stockcake.com/public/0/1/1/0116f996-5785-4d14-9d85-0ba7a5bcf79a_large/serene-library-space-stockcake.jpg)",
+        backgroundImage: "url(https://i.ibb.co.com/why29PMG/banner.jpg)",
       }}
     >
       <div className="hero-overlay bg-black/60 "></div>
@@ -29,9 +29,11 @@ const Banner = () => {
           </span>
           <br />
           <div>
-            <button className="btn btn-primary px-8 font-bold text-white shadow-lg shadow-primary/20 normal-case hover:scale-105 transition-transform duration-200">
-              Explore Rooms
-            </button>
+            <Link href={"/room"}>
+              <button className="btn btn-primary px-8 font-bold text-white shadow-lg shadow-primary/20 normal-case hover:scale-105 transition-transform duration-200">
+                Explore Rooms
+              </button>
+            </Link>
           </div>
         </div>
       </div>

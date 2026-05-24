@@ -28,7 +28,7 @@ const Navbar = () => {
       </div>
 
       {/* Navigation Links - Updated to match StudyNook Layout Requirements */}
-      <ul className=" flex justify-center font-semibold items-center text-gray-700 gap-3">
+      <ul className=" flex flex-1 justify-center font-semibold items-center text-gray-700 gap-3">
         <li>
           <NavLink href={"/"} className="p-2 rounded-sm">
             Home
