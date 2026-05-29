@@ -24,31 +24,48 @@ import {
 } from "react-icons/md";
 import { HiOutlineSparkles } from "react-icons/hi2";
 import toast from "react-hot-toast";
+import { useState } from "react";
 
 const addRoomPage = () => {
   const { data: session } = authClient.useSession();
   const user = session?.user;
 
+  const [formKey, setFormKey] = useState(0);
+  const [selectedAmenities, setSelectedAmenities] = useState([]);
+
+  const handleReset = () => {
+    setSelectedAmenities([]);
+    setFormKey((prev) => prev + 1); // Wipes out all field components instantly
+  };
+
+  const amenities = [
+    "Whiteboard",
+    "Projector",
+    "High-Speed Wi-Fi",
+    "Power Outlets",
+    "Quiet Zone",
+    "Air Conditioning",
+  ];
+
   const onSubmit = async (e) => {
     e.preventDefault();
+
+    if (selectedAmenities.length === 0) {
+      toast.error("Please select at least one amenity");
+      return;
+    }
 
     const formElement = e.nativeEvent?.target || e.target;
     const formData = new FormData(formElement);
 
-    // Safely extract text inputs
-    const roomInfoBase = Object.fromEntries(formData.entries());
-    const selectedAmenities = formData.getAll("amenities");
-
-    // HeroUI fallback check: Explicitly grab capacities if Object.fromEntries misses them
     const finalFormPayload = {
       name: formData.get("name"),
       bio: formData.get("bio"),
       image: formData.get("image"),
       floor: formData.get("floor"),
-      // Force numbers to be actual Integers/Floats before sending to MongoDB
       capacity: Number(formData.get("capacity")),
       pricePerHour: Number(formData.get("pricePerHour")),
-      amenities: selectedAmenities,
+      amenities: selectedAmenities, // Syncs perfectly with React State
       userId: user?.id || null,
       userEmail: user?.email || null,
     };
@@ -72,7 +89,7 @@ const addRoomPage = () => {
 
       if (data.acknowledged) {
         toast.success("Room Added Successfully");
-        formElement.reset(); // Clear form on success
+        handleReset();
         console.log(data);
       }
     } catch (error) {
@@ -89,13 +106,13 @@ const addRoomPage = () => {
       <div className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative z-10">
         {/* Left Side: Editorial Descriptive Banner */}
         <div className="lg:col-span-4 text-left lg:pt-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-100/80 dark:bg-cyan-950/50 border border-cyan-200/50 dark:border-cyan-900/30 text-cyan-800 dark:text-cyan-300 text-xs font-semibold uppercase tracking-wider mb-4 shadow-sm backdrop-blur-xs">
-            <HiOutlineSparkles className="text-sm text-cyan-600 dark:text-cyan-400 animate-pulse" />
-            My Workspace
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-100/80 dark:bg-cyan-950/50 border border-cyan-200/50 dark:border-cyan-900/30 text-[#344E41] dark:text-cyan-300 text-xs font-semibold uppercase tracking-wider mb-4 shadow-sm backdrop-blur-xs">
+            <HiOutlineSparkles className="text-sm text-[#344E41] dark:text-cyan-400 animate-pulse" />
+            Add Workspace
           </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white sm:text-4xl">
             List Your Space on{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600 dark:from-cyan-400 dark:to-blue-400">
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-[#588157] to-[#3A5A40] dark:from-cyan-400 dark:to-blue-400">
               StudyNook
             </span>
           </h1>
@@ -122,12 +139,12 @@ const addRoomPage = () => {
         </div>
 
         {/* Right Side: The Styled Form Layout Card Container */}
-        <div className="lg:col-span-8 bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800/80 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-black/40 overflow-hidden">
-          <Form className="p-6 sm:p-10" onSubmit={onSubmit}>
+        <div className="lg:col-span-8 bg-[#DAD7CD] dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800/80 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-black/40 overflow-hidden">
+          <Form key={formKey} className="p-6 sm:p-10" onSubmit={onSubmit}>
             <Fieldset className="space-y-6">
               <div>
                 <Fieldset.Legend className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
-                  Room Configuration Details
+                  Add Room Details
                 </Fieldset.Legend>
                 <Description className="text-xs text-slate-400 dark:text-zinc-400 mt-1 block">
                   Fill out structural fields cleanly to maximize room scheduling
@@ -192,10 +209,10 @@ const addRoomPage = () => {
                   className="flex flex-col w-full"
                 >
                   <Label className="text-sm font-semibold text-slate-800 dark:text-zinc-300">
-                    Workspace Image URL
+                    Room Image URL
                   </Label>
                   <Input
-                    placeholder="https://...your-premium-photo"
+                    placeholder="https://...Your Premium Room Photo..."
                     className="mt-1.5 w-full bg-slate-50/50 dark:bg-zinc-900/40 border-slate-200 dark:border-zinc-800 focus:border-cyan-500 transition-colors"
                   />
                   <FieldError className="text-xs text-red-500 mt-1 font-medium" />
@@ -217,7 +234,7 @@ const addRoomPage = () => {
                       Floor
                     </Label>
                     <Input
-                      placeholder="e.g., 3rd Floor"
+                      placeholder="e.g. 3rd Floor"
                       className="bg-white dark:bg-zinc-950 border-slate-200 dark:border-zinc-800 focus:border-cyan-500"
                     />
                     <FieldError className="text-xs text-red-500 mt-1" />
@@ -262,40 +279,66 @@ const addRoomPage = () => {
                 </div>
 
                 {/* Amenity Toggles Grid */}
-                <div className="p-4 bg-slate-50/60 dark:bg-zinc-900/20 border border-slate-100 dark:border-zinc-900 rounded-xl">
-                  <CheckboxGroup
-                    isRequired
-                    name="amenities"
-                    className="flex flex-col gap-2"
-                  >
-                    <Label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 mb-2 block">
-                      Amenities & Space Inclusions
-                    </Label>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                      {[
-                        { id: "whiteboard", label: "Whiteboard" },
-                        { id: "projector", label: "Projector" },
-                        { id: "wifi", label: "High-Speed Wi-Fi" },
-                        { id: "power", label: "Power Outlets" },
-                        { id: "quiet", label: "Quiet Zone" },
-                        { id: "air", label: "Air Conditioning" },
-                      ].map((item) => (
-                        <Checkbox
-                          key={item.id}
-                          value={item.id}
-                          className="cursor-pointer group flex items-center gap-2"
+                <div className="p-6 bg-slate-50/60 dark:bg-zinc-900/20 border border-slate-100 dark:border-zinc-900 rounded-xl">
+                  <h3 className="text-xs font-bold tracking-wider text-slate-500 dark:text-zinc-400 mb-5 block">
+                    <span className="uppercase">
+                      AMENITIES & SPACE INCLUSIONS{" "}
+                      <span className="text-red-500">*</span>
+                    </span>{" "}
+                    <span className="text-slate-400 font-normal lowercase">
+                      (Please select at least one amenity)
+                    </span>
+                  </h3>
+
+                  {/* Grid Layout */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-4">
+                    {amenities?.map((amenity, index) => {
+                      const isChecked = selectedAmenities.includes(amenity);
+
+                      return (
+                        <div
+                          key={index}
+                          onClick={() => {
+                            setSelectedAmenities((prev) =>
+                              prev.includes(amenity)
+                                ? prev.filter((item) => item !== amenity)
+                                : [...prev, amenity],
+                            );
+                          }}
+                          className="flex items-center gap-3 cursor-pointer group select-none h-6"
                         >
-                          <Checkbox.Control className="border-slate-300 dark:border-zinc-700 data-[selected=true]:bg-cyan-600 data-[selected=true]:border-cyan-600 rounded-md transition-all shadow-xs" />
-                          <Checkbox.Content>
-                            <Label className="text-sm font-medium text-slate-700 dark:text-zinc-300 group-hover:text-slate-900 dark:group-hover:text-white cursor-pointer transition-colors">
-                              {item.label}
-                            </Label>
-                          </Checkbox.Content>
-                        </Checkbox>
-                      ))}
-                    </div>
-                    <FieldError className="text-xs text-red-500 mt-2 font-medium" />
-                  </CheckboxGroup>
+                          {/* Custom Checkbox Frame */}
+                          <div
+                            className={`w-4 h-4 rounded border transition-all flex items-center justify-center shrink-0 grow-0 ${
+                              isChecked
+                                ? "bg-blue-600 border-blue-600 shadow-xs"
+                                : "bg-white dark:bg-zinc-900 border-slate-300 dark:border-zinc-700 group-hover:border-slate-400"
+                            }`}
+                          >
+                            {isChecked && (
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="w-2.5 h-2.5 text-white"
+                              >
+                                <polyline points="20 6 9 17 4 12" />
+                              </svg>
+                            )}
+                          </div>
+
+                          {/* Text String */}
+                          <span className="text-sm font-medium text-slate-700 dark:text-zinc-300 group-hover:text-slate-900 dark:group-hover:text-white transition-colors leading-none truncate">
+                            {amenity}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </FieldGroup>
 
@@ -303,14 +346,15 @@ const addRoomPage = () => {
               <Fieldset.Actions className="flex flex-col sm:flex-row-reverse items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-zinc-900">
                 <Button
                   type="submit"
-                  className="w-full sm:w-auto bg-gradient-to-r from-cyan-600 to-cyan-700 hover:from-cyan-700 hover:to-cyan-800 text-white font-semibold px-6 py-2.5 rounded-xl transition-all shadow-md shadow-cyan-600/10 hover:shadow-cyan-600/20 flex items-center justify-center gap-2"
+                  className="w-full sm:w-auto bg-linear-to-r from-[#588157] to-[#3A5A40] hover:from-[#3A5A40] hover:to-[#344E41] text-white font-semibold px-6 py-2.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
                 >
                   <MdPublishedWithChanges className="text-lg" />
                   Publish Room
                 </Button>
                 <Button
-                  type="reset"
-                  className="w-full sm:w-auto bg-transparent border border-slate-200 dark:border-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-900 text-slate-600 dark:text-zinc-400 font-medium px-6 py-2.5 rounded-xl transition-all"
+                  type="button"
+                  onClick={handleReset}
+                  className="w-full sm:w-auto bg-transparent border border-[#3A5A40] dark:border-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-900 text-slate-600 dark:text-zinc-400 font-medium px-6 py-2.5 rounded-xl transition-all"
                 >
                   Reset Form
                 </Button>

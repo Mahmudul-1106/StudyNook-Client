@@ -43,7 +43,7 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-full flex flex-col">
         <Navbar></Navbar>
-        <main className="mt-18 ">
+        <main className="mt-20 container mx-auto">
         {children}
         </main>
         <Toaster />

@@ -1,6 +1,6 @@
 @import "tailwindcss";
-@plugin "daisyui";
 @import "@heroui/styles";
+@plugin "daisyui";
 
 @theme {
   /* 1. This registers the utilities: font-heading & font-body */

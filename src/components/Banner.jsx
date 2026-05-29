@@ -30,7 +30,7 @@ const Banner = () => {
           <br />
           <div>
             <Link href={"/room"}>
-              <button className="btn btn-primary px-8 font-bold text-white shadow-lg shadow-primary/20 normal-case hover:scale-105 transition-transform duration-200">
+              <button className="p-3 border border-white rounded-xl bg-linear-to-r from-[#588157] to-[#3A5A40] hover:from-[#3A5A40] hover:to-[#344E41] px-8 font-bold text-white  hover:scale-105 transition-transform duration-200">
                 Explore Rooms
               </button>
             </Link>
