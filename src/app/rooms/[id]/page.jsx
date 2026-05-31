@@ -7,6 +7,7 @@ import { useParams, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 import { MdEmail } from "react-icons/md";
+import BookingModal from "@/components/BookingModal";
 
 const RoomDetailsPage = () => {
   const { id } = useParams();
@@ -286,31 +287,11 @@ const RoomDetailsPage = () => {
 
       {/* ─── MODAL CONTAINER: CONFIRM BOOKING TRANSACTION ─── */}
       {showBookingModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-          <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl">
-            <h3 className="text-lg font-bold text-[#344E41] dark:text-emerald-400">
-              Reserve Nook Assignment?
-            </h3>
-            <p className="text-xs text-gray-500 dark:text-zinc-400 mt-2 leading-relaxed">
-              Clicking confirm will commit a booking session instance. This
-              increments the room metrics globally.
-            </p>
-            <div className="flex justify-end gap-2 mt-6">
-              <button
-                onClick={() => setShowBookingModal(false)}
-                className="px-3 py-1.5 text-xs font-bold text-gray-500 bg-gray-100 dark:bg-zinc-800 rounded-lg cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={executeBooking}
-                className="px-4 py-1.5 text-xs font-bold bg-[#3A5A40] text-white rounded-lg cursor-pointer hover:bg-[#344E41]"
-              >
-                Confirm Booking
-              </button>
-            </div>
-          </div>
-        </div>
+        <BookingModal
+          onClose={() => setShowBookingModal(false)}
+          roomDetails={roomDetails} // Passes id, pricePerHour, and name
+          userSession={session} // Passes active Better-Auth account metadata profile context
+        />
       )}
 
       {/* ─── MODAL CONTAINER: Delete Room ─── */}

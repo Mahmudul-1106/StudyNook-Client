@@ -88,7 +88,7 @@ const RoomCard = ({ room }) => {
             <span className="text-xs text-black/70 font-semibold">/hr</span>
           </div>
           <Link href={`/rooms/${_id}`}>
-            <button className=" py-3 bg-linear-to-r from-[#588157] to-[#3A5A40] hover:from-[#3A5A40] hover:to-[#344E41] cursor-pointer rounded-xl text-white px-4">
+            <button className=" py-2 bg-linear-to-r from-[#588157] to-[#3A5A40] hover:from-[#3A5A40] hover:to-[#344E41] cursor-pointer rounded-xl text-white px-4">
               View Details
             </button>
           </Link>
