@@ -70,7 +70,7 @@ const RoomPage = () => {
   };
 
   return (
-    <div className="pt-5 pb-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen">
+    <div className="pt-5 pb-10 mx-auto px-4 min-h-screen">
       {/* Page Header Section */}
       <div className="mb-8 border-b border-gray-100 dark:border-zinc-900 pb-5">
         <h1 className="text-3xl font-extrabold tracking-tight text-[#344E41] dark:text-cyan-400 sm:text-4xl">

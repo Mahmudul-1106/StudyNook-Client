@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
   const [isShowPassword, setIsShowPassword] = useState(false);
-  const router = useRouter();
+  // const router = useRouter();
 
   // Dynamic Browser Tab Title
   useEffect(() => {
@@ -43,19 +43,17 @@ const LoginPage = () => {
     }
 
     if (data) {
-      const TOAST_DURATION = 2000; // 2 seconds
+      const TOAST_DURATION = 1500; // Shorter, snappy toast duration
 
-      // 1. Trigger the toast with an explicit duration match
       toast.success("Login Successful!", {
         duration: TOAST_DURATION,
       });
 
-      // 2. Natively flush Next.js client-side cached route nodes right away
-      router.refresh();
-
-      // 3. Wait until the exact moment the toast finishes and disappears
+      // Wait for the success toast to be readable, then redirect smoothly
       setTimeout(() => {
-        router.push("/");
+        // Redirection via window.location completely prevents Next.js route deadlocks
+        // and guarantees your Navbar session updates perfectly.
+        window.location.href = "/";
       }, TOAST_DURATION);
     }
   };

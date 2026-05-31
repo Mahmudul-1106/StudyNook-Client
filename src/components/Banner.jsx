@@ -29,7 +29,7 @@ const Banner = () => {
           </span>
           <br />
           <div>
-            <Link href={"/room"}>
+            <Link href={"/rooms"}>
               <button className="p-3 border border-white rounded-xl bg-linear-to-r from-[#588157] to-[#3A5A40] hover:from-[#3A5A40] hover:to-[#344E41] px-8 font-bold text-white  hover:scale-105 transition-transform duration-200">
                 Explore Rooms
               </button>

@@ -1,14 +1,36 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { useSpring, animated, useSprings } from "@react-spring/web";
 
 const RoomCard = ({ room }) => {
   const { _id, name, bio, image, floor, capacity, pricePerHour, amenities } =
     room;
 
+  const [props, set] = useSpring(() => ({
+    scale: 1,
+    shadow: "0px 5px 15px rgba(0,0,0,0.1)",
+    config: { tension: 300, friction: 10 }, // Bouncy config
+  }));
+
   return (
-    // 'flex flex-col h-full' ensures cards maintain a matching equal height footprint
-    <div className="card bg-[#DAD7CD] mb-0 pb-0 w-full border border-base-200/60 hover:shadow-lg transition-shadow duration-300 flex flex-col h-full overflow-hidden">
+    <animated.div
+      // 2. Apply the animated props to the style
+      style={{
+        transform: props.scale.to((s) => `scale(${s})`),
+        boxShadow: props.shadow,
+      }}
+      // 3. Trigger changes on hover
+      onMouseEnter={() =>
+        set({ scale: 1.05, shadow: "0px 15px 30px rgba(0,0,0,0.2)" })
+      }
+      onMouseLeave={() =>
+        set({ scale: 1, shadow: "0px 5px 15px rgba(0,0,0,0.1)" })
+      }
+      // 'flex flex-col h-full' ensures cards maintain a matching equal height footprint
+      className="card bg-[#DAD7CD] mb-0 pb-0 w-full border border-base-200/60 hover:shadow-lg transition-shadow duration-300 flex flex-col h-full overflow-hidden"
+    >
       {/* Uniform Crop Image Field */}
       <div className="hover-3d">
         <figure className="relative h-48 w-full bg-base-200 rounded-md">
@@ -36,7 +58,7 @@ const RoomCard = ({ room }) => {
         </div>
 
         {/* Short Description: Truncated smoothly to ~100 characters via line-clamp utilities */}
-        <p className="text-sm text-base-content/80 line-clamp-2 my-1 grow">
+        <p className="text-sm text-base-content/80 line-clamp-2 my-1 overflow-hidden wrap-break-word whitespace-normal">
           {bio}
         </p>
 
@@ -45,7 +67,7 @@ const RoomCard = ({ room }) => {
           {amenities?.slice(0, 3).map((amenity, index) => (
             <div
               key={index}
-              className="badge border-0 bg-[#A3B18A]  badge-sm rounded-md capitalize font-medium text-[11px] tracking-wide py-2"
+              className="badge badge-outline border-[#344E41] bg-[#A3B18A]  badge-sm rounded-md capitalize font-medium text-[11px] tracking-wide py-2"
             >
               {amenity}
             </div>
@@ -72,7 +94,7 @@ const RoomCard = ({ room }) => {
           </Link>
         </div>
       </div>
-    </div>
+    </animated.div>
   );
 };
 
