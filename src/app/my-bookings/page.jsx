@@ -248,7 +248,7 @@ const MyBookingsPage = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
           <div className="bg-white dark:bg-zinc-900 border border-red-200 dark:border-zinc-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl animate-in fade-in-50 zoom-in-95">
             <h3 className="text-lg font-bold text-red-600">
-              Cancel standard reservation?
+              Cancel Reservation?
             </h3>
             <p className="text-xs text-gray-500 dark:text-zinc-400 mt-2 leading-relaxed">
               Are you sure you want to drop your slot allocation for{" "}

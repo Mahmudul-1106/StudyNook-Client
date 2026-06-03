@@ -8,28 +8,26 @@ import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 import { MdEmail } from "react-icons/md";
 import BookingModal from "@/components/BookingModal";
+import EditRoomModal from "@/components/EditRoomModal"; // 🔥 Added modal import references
 
 const RoomDetailsPage = () => {
   const { id } = useParams();
   const router = useRouter();
 
-  // 1. Better-Auth active tracking hooks
   const { data: session, isPending: sessionLoading } = authClient.useSession();
 
   const [roomDetails, setRoomDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false); // 🔥 Added Edit toggle tracker
 
-  // Fetch target documentation node on mount
   useEffect(() => {
     const fetchRoomDetails = async () => {
       try {
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/rooms/${id}`,
-          {
-            cache: "no-store",
-          },
+          { cache: "no-store" },
         );
         if (!res.ok) throw new Error("Target document missing");
         const data = await res.json();
@@ -70,11 +68,9 @@ const RoomDetailsPage = () => {
     createdAt,
   } = roomDetails;
 
-  // 2. Compute runtime security check contexts
   const isLoggedIn = !!session?.user;
   const isOwner = isLoggedIn && session?.user?.email === ownerEmail;
 
-  // Formatting date string nicely
   const formattedDate = createdAt
     ? new Date(createdAt).toLocaleDateString("en-US", {
         year: "numeric",
@@ -83,7 +79,6 @@ const RoomDetailsPage = () => {
       })
     : "Recently Added";
 
-  // Handle Book Action Lifecycle
   const handleBookingTrigger = () => {
     if (!isLoggedIn) {
       toast.error("Please login to secure a booking");
@@ -93,38 +88,11 @@ const RoomDetailsPage = () => {
     }
   };
 
-  // Perform atomic counter updates over backend channels
-  const executeBooking = async () => {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/rooms/${id}/book`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-        },
-      );
-      if (!res.ok) throw new Error();
-
-      // Local state sync
-      setRoomDetails((prev) => ({
-        ...prev,
-        bookingCount: (prev.bookingCount || 0) + 1,
-      }));
-      toast.success("Room booked successfully!");
-      setShowBookingModal(false);
-    } catch (err) {
-      toast.error("Booking submission transaction rejected.");
-    }
-  };
-
-  // Confirm and drop data array elements
   const confirmDeleteResource = async () => {
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/rooms/${id}`,
-        {
-          method: "DELETE",
-        },
+        { method: "DELETE" },
       );
       if (!res.ok) throw new Error();
 
@@ -137,7 +105,6 @@ const RoomDetailsPage = () => {
 
   return (
     <div className=" mx-auto px-4 pt-5 pb-10">
-      {/* Heading */}
       <div className="pb-6 text-center">
         <h2 className="text-3xl tracking-tight font-heading text-[#344E41] dark:text-zinc-100 sm:text-4xl">
           Room Details
@@ -145,7 +112,6 @@ const RoomDetailsPage = () => {
       </div>
 
       <div className="card p-5 grid grid-cols-1 lg:grid-cols-2 gap-6 bg-base-200 w-full h-full border border-base-200/60 hover:shadow-lg transition-all duration-300 overflow-hidden dark:bg-zinc-950 dark:border-zinc-900 rounded-2xl">
-        {/* Left Column: Image Area */}
         <div className="hover-3d w-full h-full min-h-[300px] lg:min-h-[400px]">
           <figure className="relative h-full w-full bg-base-200 dark:bg-zinc-900 rounded-xl overflow-hidden min-h-[300px] lg:min-h-[400px]">
             <Image
@@ -162,13 +128,10 @@ const RoomDetailsPage = () => {
           </figure>
         </div>
 
-        {/* Right Column: Combined layout contents split seamlessly */}
         <div className="flex flex-col gap-4 justify-between">
-          {/* Card Body Container */}
           <div className="card-body bg-[#DAD7CD] text-neutral-800 p-5 flex flex-col grow rounded-xl justify-between">
             <div>
               <div className="flex justify-between items-start gap-2">
-                {/* Title */}
                 <h3 className="text-2xl font-bold line-clamp-1 text-[#1c2e24]">
                   {name}
                 </h3>
@@ -177,12 +140,12 @@ const RoomDetailsPage = () => {
                     ${pricePerHour}
                   </span>
                   <span className="text-xs text-black/70 font-semibold">
+                    {" "}
                     /hr
                   </span>
                 </div>
               </div>
 
-              {/* Live Counter Display Row */}
               <div className="mt-2 flex flex-wrap gap-2 items-center justify-between">
                 <span className="bg-[#344E41] text-white text-[11px] uppercase tracking-wider font-extrabold px-3 py-2 rounded-sm">
                   🔄 Booked {bookingCount} Times
@@ -192,14 +155,12 @@ const RoomDetailsPage = () => {
                 </span>
               </div>
 
-              {/* Metric Meta Row: Floor & Seats Layout */}
               <div className="flex flex-wrap items-center gap-x-2 text-xs text-black/70 font-bold mt-3 mb-2">
-                <span>🏢 {floor || "Main Floor"}</span>
+                <span>🏢 {floor ? `Floor ${floor}` : "Main Floor"}</span>
                 <span className="text-black/30">•</span>
                 <span>👥 {capacity} Seats Capacity</span>
               </div>
 
-              {/* Dynamic Slice Amenity Chips Container */}
               <div className="flex flex-wrap gap-1.5 my-3">
                 {amenities?.map((amenity, index) => (
                   <div
@@ -211,10 +172,9 @@ const RoomDetailsPage = () => {
                 ))}
               </div>
 
-              {/* Description */}
               <p className="text-sm text-black/80 font-medium leading-relaxed my-2">
                 {bio ||
-                  "No extended background documentation provided for this reservation space asset."}
+                  "No background documentation provided for this space asset."}
               </p>
               <div className="border-t border-[#344E41]/20">
                 <button
@@ -229,7 +189,6 @@ const RoomDetailsPage = () => {
             </div>
           </div>
 
-          {/* Room Owner Info Section */}
           <div className="bg-[#DAD7CD] rounded-xl shadow-xs p-5">
             <div className=" flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -242,9 +201,8 @@ const RoomDetailsPage = () => {
                       "https://i.ibb.co.com/MxZjwyFH/default-avater.jpg"
                     }
                     unoptimized
-                    width={12}
-                    height={12}
-                    // sizes="(max-w-768px) 100vw, (max-w-1024px) 50vw, 33vw"
+                    width={48}
+                    height={48}
                   />
                 </figure>
 
@@ -263,18 +221,19 @@ const RoomDetailsPage = () => {
               </span>
             </div>
 
-            {/* Conditional Management Panel & Action Button Row */}
-            <div className=" ">
+            <div>
               {isOwner && (
                 <div className="mt-4 pt-4 border-t border-[#344E41]/20 flex gap-2 w-full">
-                  <Link href={`/rooms/${id}/edit`} className="w-1/2">
-                    <button className="w-full py-2 border border-[#344E41] bg-white hover:bg-[#344E41] hover:text-white text-[#344E41] font-bold text-xs rounded-xl cursor-pointer transition-colors">
-                      🛠️ Edit Room
-                    </button>
-                  </Link>
+                  {/* 🔥 FIXED: Click handler now triggers inline configuration update modal status */}
+                  <button
+                    onClick={() => setShowEditModal(true)}
+                    className="w-1/2 py-2 border border-[#344E41] bg-white hover:bg-[#344E41] hover:text-white text-[#344E41] font-bold text-xs rounded-xl cursor-pointer transition-colors"
+                  >
+                    🛠️ Update Room Info
+                  </button>
                   <button
                     onClick={() => setShowDeleteModal(true)}
-                    className="w-1/2 py-2 text-red-600 border border-red-600 bg-white hover:bg-red-500 hover:text-white  font-bold text-xs rounded-xl cursor-pointer transition-colors"
+                    className="w-1/2 py-2 text-red-600 border border-red-600 bg-white hover:bg-red-500 hover:text-white font-bold text-xs rounded-xl cursor-pointer transition-colors"
                   >
                     🗑️ Remove Room
                   </button>
@@ -289,8 +248,17 @@ const RoomDetailsPage = () => {
       {showBookingModal && (
         <BookingModal
           onClose={() => setShowBookingModal(false)}
-          roomDetails={roomDetails} // Passes id, pricePerHour, and name
-          userSession={session} // Passes active Better-Auth account metadata profile context
+          roomDetails={roomDetails}
+          userSession={session}
+        />
+      )}
+
+      {/* ─── 🔥 MODAL CONTAINER: EDIT ROOM LISTING INFO ─── */}
+      {showEditModal && (
+        <EditRoomModal
+          onClose={() => setShowEditModal(false)}
+          roomDetails={roomDetails}
+          onUpdateSuccess={(updatedData) => setRoomDetails(updatedData)} // Real-time client structural update hook sync
         />
       )}
 
