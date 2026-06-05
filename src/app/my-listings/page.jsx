@@ -1,36 +1,48 @@
+//
 "use client";
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+// 1. Keep authClient for client-side authentication states
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
-// 1. IMPORT YOUR EDIT MODAL
 import EditRoomModal from "@/components/EditRoomModal";
+
+// ❌ REMOVED: import { auth } from "@/lib/auth"; (This was leaking server code to the browser)
 
 const MyListingsPage = () => {
   const { data: session, isPending: sessionLoading } = authClient.useSession();
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // States to manage room deletion lifecycle instances
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // 2. NEW STATES FOR EDITING LIFECYCLE
   const [showEditModal, setShowEditModal] = useState(false);
   const [roomToEdit, setRoomToEdit] = useState(null);
 
-  // Fetch all listed study spaces matching the current logged-in owner's context
   useEffect(() => {
     const fetchUserListings = async () => {
       if (!session?.user?.email) return;
+
       try {
+        // 2. FETCH TOKEN CORRECTLY ON THE CLIENT SIDE USING authClient
+        const { data: tokenData } = await authClient.token();
+
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/rooms?ownerEmail=${session.user.email}`,
-          { cache: "no-store" },
+          {
+            method: "GET",
+            cache: "no-store",
+            headers: {
+              // 3. Attach the token to your authorization headers securely
+              Authorization: `Bearer ${tokenData?.token}`,
+            },
+          },
         );
+        // console.log("Token", tokenData?.token);
         if (!res.ok) throw new Error();
         const data = await res.json();
 
@@ -55,39 +67,43 @@ const MyListingsPage = () => {
     }
   }, [session, sessionLoading]);
 
-  // Open confirmation modal handler
   const triggerDeleteClick = (room) => {
     setSelectedRoom(room);
     setShowDeleteModal(true);
   };
 
-  // 3. HANDLER TO OPEN THE EDIT MODAL
   const triggerEditClick = (room) => {
     setRoomToEdit(room);
     setShowEditModal(true);
   };
 
-  // 4. CALL BACK HANDLER FOR REAL-TIME UI UPDATE AFTER EDITING
   const handleUpdateSuccess = (updatedRoom) => {
     setRooms((prev) =>
       prev.map((room) => (room._id === updatedRoom._id ? updatedRoom : room)),
     );
   };
 
-  // Execute structural database target row deletion
   const executeRoomDeletion = async () => {
     if (!selectedRoom) return;
     try {
       setIsDeleting(true);
+
+      // Get token here too for your DELETE request security validation
+      const { data: tokenData } = await authClient.token();
+
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/rooms/${selectedRoom._id}`,
-        { method: "DELETE" },
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${tokenData?.token}`,
+          },
+        },
       );
 
       if (!res.ok) throw new Error();
 
       toast.success("Study space asset permanently deleted.");
-
       setRooms((prev) => prev.filter((r) => r._id !== selectedRoom._id));
       setShowDeleteModal(false);
     } catch (err) {
@@ -119,7 +135,6 @@ const MyListingsPage = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      {/* Page Layout Heading block */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
           <h2 className="text-3xl font-bold text-[#344E41] tracking-tight">
@@ -213,7 +228,6 @@ const MyListingsPage = () => {
 
                   <td className="p-4 text-center">
                     <div className="flex items-center justify-center gap-2">
-                      {/* 5. REMOVED LINK ROUTE AND ADDED CLICK TRIGGER FOR MODAL */}
                       <button
                         onClick={() => triggerEditClick(room)}
                         className="btn btn-xs sm:btn-sm border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 font-bold rounded-lg cursor-pointer transition-all"
@@ -235,8 +249,6 @@ const MyListingsPage = () => {
         </div>
       )}
 
-      {/* ─── MODAL CONTAINER: EDIT ROOM PROPERTIES ─── */}
-      {/* 6. RENDER THE EDIT MODAL AT THE BOTTOM */}
       {showEditModal && roomToEdit && (
         <EditRoomModal
           roomDetails={roomToEdit}
@@ -248,7 +260,6 @@ const MyListingsPage = () => {
         />
       )}
 
-      {/* ─── MODAL CONTAINER: DYNAMIC CONFIRM RESOURCE DELETION DIALOG ─── */}
       {showDeleteModal && selectedRoom && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
           <div className="bg-white dark:bg-zinc-900 border border-red-200 dark:border-zinc-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl animate-in fade-in-50 zoom-in-95">

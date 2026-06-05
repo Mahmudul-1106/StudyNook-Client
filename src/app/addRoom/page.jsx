@@ -447,12 +447,14 @@ const addRoomPage = () => {
     };
 
     try {
+      const { data: tokenData } = await authClient.token();
       console.log("Unified Submission Payload:", finalFormPayload);
 
       const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/rooms`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${tokenData?.token}`,
         },
         body: JSON.stringify(finalFormPayload),
       });
