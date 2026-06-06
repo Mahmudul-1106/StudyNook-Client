@@ -1,4 +1,3 @@
-//
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -8,8 +7,6 @@ import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 import EditRoomModal from "@/components/EditRoomModal";
-
-// ❌ REMOVED: import { auth } from "@/lib/auth"; (This was leaking server code to the browser)
 
 const MyListingsPage = () => {
   const { data: session, isPending: sessionLoading } = authClient.useSession();
