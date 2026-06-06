@@ -77,8 +77,8 @@ const RoomPage = () => {
           All Study Rooms
         </h1>
         <p className="mt-2 text-sm text-gray-600 dark:text-zinc-400 max-w-2xl">
-          Browse our complete catalog of private workspaces. Refine your
-          discovery environment using filters below.
+          Browse our complete catalog of private rooms. Refine your discovery
+          environment using filters below.
         </p>
       </div>
 
