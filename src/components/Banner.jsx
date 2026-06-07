@@ -16,9 +16,8 @@ const Banner = () => {
             Find Your Perfect Study Room
           </h1>
           <p className="mb-8 text-base text-neutral-content/90 sm:text-lg max-w-xl mx-auto leading-relaxed">
-            Browse and book quiet, private study rooms in your library by the
-            hour. List your own room and earn — without the scheduling
-            headaches.
+            Browse and book quiet, private study rooms in your library. List
+            your own room and earn.
           </p>
           <span className="text-rotate text-3xl leading-[2]">
             <span className="justify-items-center font-semibold">
