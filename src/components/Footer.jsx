@@ -129,11 +129,11 @@ const Footer = () => {
             data secured.
           </p>
           <div className="flex justify-center gap-4">
-            <Link href="/privacy" className="hover:text-white hover:underline">
+            <Link href="/" className="hover:text-white hover:underline">
               Privacy Terms
             </Link>
             <span>•</span>
-            <Link href="/terms" className="hover:text-white hover:underline">
+            <Link href="/" className="hover:text-white hover:underline">
               Security Protocols
             </Link>
           </div>
