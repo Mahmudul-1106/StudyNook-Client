@@ -69,7 +69,7 @@ const NotFoundPage = () => {
           href="/"
           className="w-full sm:w-auto px-6 py-2.5 text-xs font-black text-white bg-[#3A5A40] hover:bg-[#344E41] rounded-xl shadow-md hover:shadow-lg transition-all text-center cursor-pointer"
         >
-          🏡 Return to Main Nook
+          🏡 Return to Home
         </Link>
       </div>
 

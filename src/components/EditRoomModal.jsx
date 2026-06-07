@@ -5,12 +5,12 @@ import toast from "react-hot-toast";
 
 // Define a master list of available options for selection
 const AVAILABLE_AMENITIES = [
-  "WiFi",
+  "High-Speed Wi-Fi",
   "Whiteboard",
   "Projector",
-  "AC",
-  "Sound System",
-  "Catering",
+  "Air Conditioning",
+  "Power Outlets",
+  "Quiet Zone",
 ];
 
 const EditRoomModal = ({ onClose, roomDetails, onUpdateSuccess }) => {
