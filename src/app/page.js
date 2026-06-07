@@ -1,6 +1,7 @@
 import Banner from "@/components/Banner";
 import HowItWorks from "@/components/HowItWorks";
 import RoomCard from "@/components/RoomCard";
+import WhyChooseUs from "@/components/WhyChooseUs";
 import Image from "next/image";
 
 // Forces Next.js to re-render this server page on every navigation request
@@ -38,6 +39,9 @@ export default async function Home() {
 
       {/* How It Works section */}
       <HowItWorks></HowItWorks>
+
+      {/* Why Choose Us section */}
+      <WhyChooseUs></WhyChooseUs>
     </div>
   );
 }

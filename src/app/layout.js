@@ -3,6 +3,7 @@ import localFont from 'next/font/local'; // <-- Make sure this line exists!
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,6 +47,7 @@ export default function RootLayout({ children }) {
         <main className="mt-20 container mx-auto">
         {children}
         </main>
+        <Footer></Footer>
         <Toaster />
       </body>
     </html>
