@@ -1,4 +1,5 @@
 import Banner from "@/components/Banner";
+import HowItWorks from "@/components/HowItWorks";
 import RoomCard from "@/components/RoomCard";
 import Image from "next/image";
 
@@ -34,6 +35,9 @@ export default async function Home() {
           ))}
         </div>
       </section>
+
+      {/* How It Works section */}
+      <HowItWorks></HowItWorks>
     </div>
   );
 }
